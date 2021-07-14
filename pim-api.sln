@@ -1,0 +1,71 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31410.414
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Solution Items", "_Solution Items", "{8A8B1ACC-9023-4295-957E-323446D0BB69}"
+	ProjectSection(SolutionItems) = preProject
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+		ConnectionInformation.json = ConnectionInformation.json
+		ConnectionInformation.Sample.json = ConnectionInformation.Sample.json
+		Directory.Build.props = Directory.Build.props
+		global.json = global.json
+		License.txt = License.txt
+		NuGet.Config = NuGet.Config
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PimApi", "src\PimApi\PimApi.csproj", "{FA03B9CF-0BE4-4420-B9E7-51EA7F3AF538}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{CE7CDC96-3711-4258-AB2C-EA660F5FFCC5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PimApi.Tests", "tests\PimApi.Tests\PimApi.Tests.csproj", "{B44E5B99-0444-4DA6-8217-C323A8F62601}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Serializers", "Serializers", "{08E613B1-581D-4E1F-8CDB-D7DD5FED3B94}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PimApi.SystemTextJsonSerialization", "src\PimApi.SystemTextJsonSerialization\PimApi.SystemTextJsonSerialization.csproj", "{88322850-C12D-40ED-B7F4-C5D278AAD236}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PimApi.NewtonsoftApiSerializer", "src\PimApi.NewtonsoftApiSerializer\PimApi.NewtonsoftApiSerializer.csproj", "{FB83FEE4-C735-401A-B81E-2AE2FA6493B2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PimApi.ConsoleApp", "src\PimApi.ConsoleApp\PimApi.ConsoleApp.csproj", "{5BD8529D-7A11-4DB3-BA63-22A4AA6CED42}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FA03B9CF-0BE4-4420-B9E7-51EA7F3AF538}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA03B9CF-0BE4-4420-B9E7-51EA7F3AF538}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA03B9CF-0BE4-4420-B9E7-51EA7F3AF538}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA03B9CF-0BE4-4420-B9E7-51EA7F3AF538}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B44E5B99-0444-4DA6-8217-C323A8F62601}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B44E5B99-0444-4DA6-8217-C323A8F62601}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B44E5B99-0444-4DA6-8217-C323A8F62601}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B44E5B99-0444-4DA6-8217-C323A8F62601}.Release|Any CPU.Build.0 = Release|Any CPU
+		{88322850-C12D-40ED-B7F4-C5D278AAD236}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88322850-C12D-40ED-B7F4-C5D278AAD236}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88322850-C12D-40ED-B7F4-C5D278AAD236}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88322850-C12D-40ED-B7F4-C5D278AAD236}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB83FEE4-C735-401A-B81E-2AE2FA6493B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB83FEE4-C735-401A-B81E-2AE2FA6493B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB83FEE4-C735-401A-B81E-2AE2FA6493B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB83FEE4-C735-401A-B81E-2AE2FA6493B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5BD8529D-7A11-4DB3-BA63-22A4AA6CED42}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5BD8529D-7A11-4DB3-BA63-22A4AA6CED42}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5BD8529D-7A11-4DB3-BA63-22A4AA6CED42}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5BD8529D-7A11-4DB3-BA63-22A4AA6CED42}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B44E5B99-0444-4DA6-8217-C323A8F62601} = {CE7CDC96-3711-4258-AB2C-EA660F5FFCC5}
+		{88322850-C12D-40ED-B7F4-C5D278AAD236} = {08E613B1-581D-4E1F-8CDB-D7DD5FED3B94}
+		{FB83FEE4-C735-401A-B81E-2AE2FA6493B2} = {08E613B1-581D-4E1F-8CDB-D7DD5FED3B94}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {51116C41-F606-43F8-9904-C9701765E7C0}
+	EndGlobalSection
+EndGlobal
