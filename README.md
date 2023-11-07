@@ -4,7 +4,9 @@
 
 To use the PIM API samples in this project, credentials (AppKey and AppSecret) must first be obtained by contacting Optimizely support at support@optmizely.com.
 
-**IMPORTANT** Credentials provided will be **readonly** and limited to Http GET operations!
+**IMPORTANT** 
+* Credentials provided will have read-only or write access.
+* **read-only** credentials are limited to HTTP GET operations, and **write** credentials will allow you to call data integration endpoints to import data and check import status.
 
 Once credentials have been obtained, create a document in the solution root folder called **ConnectionInformation.json** from the following sample code
 

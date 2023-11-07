@@ -1,6 +1,8 @@
-﻿using Humanizer;
+﻿using Grpc.Core;
+using Humanizer;
 using PimApi.ConsoleApp.Queries;
 using PimApi.Extensions;
+using PimApi.SeedData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,7 +53,7 @@ namespace PimApi.ConsoleApp
                     case "reset":
                     case "clear":
                     case "cls":
-                        Begin(isReset: true);
+                        Begin();
                         continue;
                 }
 
@@ -174,9 +176,9 @@ namespace PimApi.ConsoleApp
             Console.WriteLine();
         }
 
-        private static void Begin(bool isReset = false)
+        private static void Begin()
         {
-            if (isReset) { Console.Clear(); }
+            Console.Clear();
             Console.WriteLine("To see queries type: list|help");
             Console.WriteLine("To clear console: clear|reset|cls");
             Console.WriteLine($"To exit type: {string.Join('|', stopwords)}");
@@ -201,7 +203,7 @@ namespace PimApi.ConsoleApp
         public static T ReadValue<T>(
             string prompt,
             T defaultValue,
-            System.Collections.Generic.ICollection<string>? choiceList = null)
+            ICollection<string>? choiceList = null)
         {
             if (IsUnitTest) { return defaultValue; }
 
@@ -210,7 +212,7 @@ namespace PimApi.ConsoleApp
             return Console.ReadLine().GetValueOrFallback(defaultValue);
         }
 
-        private static string GetChoiceListDisplay(System.Collections.Generic.ICollection<string>? choices) =>
+        private static string GetChoiceListDisplay(ICollection<string>? choices) =>
             choices is null || choices.Count == 0
                 ? string.Empty
                 : $"({string.Join('|', choices)})";
@@ -219,5 +221,53 @@ namespace PimApi.ConsoleApp
             defaultValue is string s && string.IsNullOrWhiteSpace(s)
                 ? string.Empty
                 : $"(default: {defaultValue})";
+
+        private static async Task ShowGrpcServices(IJsonSerializer jsonSerializer, string? pimUrlBase, string? appKey, string? appSecret)
+        {
+            var grpcService = new GrpcClientService(pimUrlBase, appKey, appSecret);
+            ShowGrpcServiceMenu();
+
+            do
+            {
+                try
+                {
+                    var selectedItem = ReadValue("Please enter a number:", string.Empty);
+                    switch (selectedItem)
+                    {
+                        case "1":
+                            var importTemplate = ReadValue("Input import template:", string.Empty);
+                            var timeZone = ReadValue("Input time zone:", string.Empty);
+                            Console.WriteLine($"{jsonSerializer.Serialize(await grpcService.Import(importTemplate, timeZone, RequestData.GetProducts()), null)}\n");
+                            break;
+                        case "2":
+                            var requestId = ReadValue("Enter request id:", string.Empty);
+                            Console.WriteLine($"{jsonSerializer.Serialize(await grpcService.GetImportStatus(requestId), null)}\n");
+                            break;
+                        case "3":
+                            ShowGrpcServiceMenu();
+                            break;
+                        default:
+                            return;
+                    }
+                }
+                catch (RpcException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            } while (true);
+        }
+
+        private static void ShowGrpcServiceMenu()
+        {
+            Console.Clear();
+            Console.WriteLine("*************************************");
+            Console.WriteLine("* Select option                     *");
+            Console.WriteLine("*   1. Import Data                  *");
+            Console.WriteLine("*   2. Check Import Status          *");
+            Console.WriteLine("*   3. Clear console                *");
+            Console.WriteLine("*   4. Exit                         *");
+            Console.WriteLine("*************************************");
+            Console.WriteLine();
+        }
     }
 }
