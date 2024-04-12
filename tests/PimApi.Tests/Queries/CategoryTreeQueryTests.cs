@@ -1,47 +1,36 @@
-﻿using FluentAssertions;
-using NUnit.Framework;
-using PimApi.ConsoleApp.Queries.Category;
-using PimApi.Entities;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using PimApi.ConsoleApp.Queries.Category;
 using static PimApi.Tests.TestSetup;
 
-namespace PimApi.Tests.Queries
+namespace PimApi.Tests.Queries;
+
+[ExcludeFromCodeCoverage]
+[TestFixture(Category = nameof(CategoryTreeDto))]
+[Parallelizable(ParallelScope.All)]
+public class CategoryTreeQueryTests
 {
-    [ExcludeFromCodeCoverage]
-    [TestFixture(Category = nameof(CategoryTreeDto))]
-    [Parallelizable(ParallelScope.All)]
-    public class CategoryTreeQueryTests
+    [TestCase(SystemTextJsonSerializer)]
+    [TestCase(NewtonsoftJsonSerializer)]
+    public async Task ShouldResolveAndDeserializeQueries(string serializerKey)
     {
-        [TestCase(SystemTextJsonSerializer)]
-        [TestCase(NewtonsoftJsonSerializer)]
-        public async Task ShouldResolveAndDeserializeQueries(string serializerKey)
-        {
-            var jsonSerializer = serializerKey.GetJsonSerializer();
-            var query = new GetCategoryTrees
-            {
-                Skip = 0,
-                Top = 10,
-            };
+        var jsonSerializer = serializerKey.GetJsonSerializer();
+        var query = new GetCategoryTrees { Skip = 0, Top = 10, };
 
-            using var result = query.Execute(ApiClient);
+        using var result = query.Execute(ApiClient);
 
-            await query.ShouldRenderMessage(result, jsonSerializer);
-            var entities = await result.GetDataAsync<ODataResponseCollection<CategoryTreeDto>>(jsonSerializer);
-            entities.Should().NotBeNull();
+        await query.ShouldRenderMessage(result, jsonSerializer);
+        var entities = await result.GetDataAsync<ODataResponseCollection<CategoryTreeDto>>(
+            jsonSerializer
+        );
+        entities.Should().NotBeNull();
 
-            var queryById = new GetByCategoryTreeId
-            {
-                Id = entities.Value.FirstOrDefault()!.Id
-            };
+        var queryById = new GetByCategoryTreeId { Id = entities.Value.FirstOrDefault()!.Id };
 
-            var entity = await queryById
-                .GetEntityById<GetByCategoryTreeId, CategoryTreeDto>(jsonSerializer);
+        var entity = await queryById.GetEntityById<GetByCategoryTreeId, CategoryTreeDto>(
+            jsonSerializer
+        );
 
-            entity.Name.Should().NotBeNullOrWhiteSpace();
-            entity.UrlSegment.Should().NotBeNullOrWhiteSpace();
-            entity.DisplaySequence.Should().BeGreaterOrEqualTo(0);
-        }
+        entity.Name.Should().NotBeNullOrWhiteSpace();
+        entity.UrlSegment.Should().NotBeNullOrWhiteSpace();
+        entity.DisplaySequence.Should().BeGreaterOrEqualTo(0);
     }
 }

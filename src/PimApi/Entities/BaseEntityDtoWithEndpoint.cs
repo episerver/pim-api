@@ -1,16 +1,15 @@
 ﻿using System.Runtime.Serialization;
 
-namespace PimApi.Entities
+namespace PimApi.Entities;
+
+/// <summary>
+/// Represents entity data stored in PIM DB table with an Http Endpoint
+/// </summary>
+public abstract class BaseEntityDtoWithEndpoint : BaseEntityDto
 {
     /// <summary>
-    /// Represents entity data stored in PIM DB table with an Http Endpoint
+    /// API Endpoint for HTTP requests
     /// </summary>
-    public abstract class BaseEntityDtoWithEndpoint : BaseEntityDto
-    {
-        /// <summary>
-        /// API Endpoint for HTTP requests
-        /// </summary>
-        [IgnoreDataMember]
-        public abstract string EntityUrlBase { get; }
-    }
+    [IgnoreDataMember]
+    public abstract string EntityUrlBase { get; }
 }

@@ -10,13 +10,13 @@
 
 	<ItemGroup>
 		<PackageReference Include="EPiServer.Turnstile.Contracts.Hmac" Version="4.5.2" />
-		<PackageReference Include="Google.Protobuf" Version="3.25.0" />
-		<PackageReference Include="Grpc.Net.Client" Version="2.58.0" />
-		<PackageReference Include="Grpc.Tools" Version="2.59.0">
+		<PackageReference Include="Google.Protobuf" Version="3.26.1" />
+		<PackageReference Include="Grpc.Net.Client" Version="2.62.0" />
+		<PackageReference Include="Grpc.Tools" Version="2.62.0">
 		  <PrivateAssets>all</PrivateAssets>
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.7" />
+		<PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="6.0.0" />
 		<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
 	</ItemGroup>
 

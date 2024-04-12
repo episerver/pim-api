@@ -1,9 +1,8 @@
 ﻿using System.Net.Http;
 
-namespace PimApi
+namespace PimApi;
+
+public interface IQuery
 {
-    public interface IQuery
-    {
-        ApiResponseMessage Execute(HttpClient pimApiClient);
-    }
+    ApiResponseMessage Execute(HttpClient pimApiClient);
 }

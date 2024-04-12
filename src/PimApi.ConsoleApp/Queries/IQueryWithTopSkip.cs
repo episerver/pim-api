@@ -1,8 +1,7 @@
-﻿namespace PimApi.ConsoleApp.Queries
+﻿namespace PimApi.ConsoleApp.Queries;
+
+public interface IQueryWithTopSkip
 {
-    public interface IQueryWithTopSkip
-    {
-        int? Top { get; }
-        int? Skip { get; }
-    }
+    int? Top { get; }
+    int? Skip { get; }
 }

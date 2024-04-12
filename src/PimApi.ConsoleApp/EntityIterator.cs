@@ -1,103 +1,92 @@
-﻿using PimApi.ConsoleApp.Queries.Miscellaneous;
-using PimApi.Entities;
-using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Runtime.CompilerServices;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Runtime.CompilerServices;
+using PimApi.ConsoleApp.Queries.Miscellaneous;
 
-namespace PimApi.ConsoleApp
+namespace PimApi.ConsoleApp;
+
+/// <summary>Entity Iterator will load all TEntity instances in efficient manner as possible on system resources</summary>
+public class EntityIterator<TEntity>
+    where TEntity : BaseEntityDtoWithEndpoint, new()
 {
-    /// <summary>
-    /// Entity Iterator will load all TEntity instances in efficient manner as possible on system resources
-    /// </summary>
-    /// <typeparam name="TEntity"></typeparam>
-    public class EntityIterator<TEntity>
-        where TEntity : BaseEntityDtoWithEndpoint, new()
+    private readonly HttpClient apiClient;
+    private readonly IJsonSerializer jsonSerializer;
+    private readonly IApiResponseMessageRenderer apiResponseMessageRenderer;
+
+    /// <summary>Runs tests assertions</summary>
+    internal Func<IQuery, ApiResponseMessage, Task>? TestAssertions { get; set; }
+
+    public EntityIterator(
+        HttpClient apiClient,
+        IJsonSerializer jsonSerializer,
+        IApiResponseMessageRenderer apiResponseMessageRenderer
+    )
     {
-        private readonly HttpClient apiClient;
-        private readonly IJsonSerializer jsonSerializer;
-        private readonly IApiResponseMessageRenderer apiResponseMessageRenderer;
+        this.apiClient = apiClient;
+        this.jsonSerializer = jsonSerializer;
+        this.apiResponseMessageRenderer = apiResponseMessageRenderer;
+    }
 
-        /// <summary>
-        /// Runs tests assertions
-        /// </summary>
-        internal Func<IQuery, ApiResponseMessage, Task>? TestAssertions { get; set; }
+    public int NumberOfRequests { get; private set; } = 0;
 
-        public EntityIterator(
-            HttpClient apiClient,
-            IJsonSerializer jsonSerializer,
-            IApiResponseMessageRenderer apiResponseMessageRenderer)
+    public int TotalEntitiesForQuery { get; private set; } = 0;
+
+    public async IAsyncEnumerable<TEntity> GetEntities(
+        ODataQuery<TEntity> oDataQuery,
+        [EnumeratorCancellation] CancellationToken cancellationToken
+    )
+    {
+        // Top disables skip so remove it
+        if (oDataQuery.Top is not null)
         {
-            this.apiClient = apiClient;
-            this.jsonSerializer = jsonSerializer;
-            this.apiResponseMessageRenderer = apiResponseMessageRenderer;
+            oDataQuery.Top = null;
         }
 
-        public int NumberOfRequests { get; private set; } = 0;
+        var query = new GenericQuery(this.apiResponseMessageRenderer) { QueryText = oDataQuery };
 
-        public int TotalEntitiesForQuery { get; private set; } = 0;
+        this.NumberOfRequests++;
+        var result = query.Execute(this.apiClient);
 
-        public async IAsyncEnumerable<TEntity> GetEntities(
-            ODataQuery<TEntity> oDataQuery,
-            [EnumeratorCancellation] CancellationToken cancellationToken)
+        if (this.TestAssertions is not null)
         {
-            // Top disables skip so remove it
-            if (oDataQuery.Top is not null)
-            {
-                oDataQuery.Top = null;
-            }
+            await this.TestAssertions.Invoke(query, result);
+        }
 
-            var query = new GenericQuery(this.apiResponseMessageRenderer)
-            {
-                QueryText = oDataQuery
-            };
+        var entityList = await result.GetDataAsync<ODataResponseCollection<TEntity>>(
+            this.jsonSerializer
+        );
 
-            this.NumberOfRequests++;
-            var result = query.Execute(this.apiClient);
+        this.TotalEntitiesForQuery = entityList.Count!.Value;
+        foreach (var entity in entityList.Value)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            yield return entity;
+        }
+
+        var nextLink = entityList.NextLink;
+
+        while (nextLink is not null)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            var nextResult = new ApiResponseMessage(
+                this.apiClient.GetAsync(nextLink, cancellationToken)
+            );
 
             if (this.TestAssertions is not null)
             {
-                await this.TestAssertions.Invoke(query, result);
+                await this.TestAssertions(query, nextResult);
             }
 
-            var entityList = await result
-                .GetDataAsync<ODataResponseCollection<TEntity>>(this.jsonSerializer);
+            var nextEntityList = await nextResult.GetDataAsync<ODataResponseCollection<TEntity>>(
+                this.jsonSerializer
+            );
 
-            this.TotalEntitiesForQuery = entityList.Count!.Value;
-            foreach (var entity in entityList.Value)
+            foreach (var entity in nextEntityList!.Value)
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return entity;
             }
 
-            var nextLink = entityList.NextLink;
-
-            while (nextLink is not null)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                var nextResult = new ApiResponseMessage(this.apiClient.GetAsync(
-                    nextLink, 
-                    cancellationToken));
-
-                if (this.TestAssertions is not null)
-                {
-                    await this.TestAssertions(query, nextResult);
-                }
-
-                var nextEntityList = await nextResult
-                    .GetDataAsync<ODataResponseCollection<TEntity>>(this.jsonSerializer);
-
-                foreach (var entity in nextEntityList!.Value)
-                {
-                    cancellationToken.ThrowIfCancellationRequested();
-                    yield return entity;
-                }
-
-                nextLink = nextEntityList?.NextLink;
-                this.NumberOfRequests++;
-            }
+            nextLink = nextEntityList?.NextLink;
+            this.NumberOfRequests++;
         }
     }
 }

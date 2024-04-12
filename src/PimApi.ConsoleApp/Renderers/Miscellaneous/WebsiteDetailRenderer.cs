@@ -1,27 +1,22 @@
-﻿using PimApi.Entities;
-using System;
-using System.Threading.Tasks;
+﻿namespace PimApi.ConsoleApp.Renderers.Miscellaneous;
 
-namespace PimApi.ConsoleApp.Renderers.Miscellaneous
+internal class WebsiteDetailRenderer : IApiResponseMessageRenderer
 {
-    internal class WebsiteDetailRenderer : IApiResponseMessageRenderer
+    public static readonly IApiResponseMessageRenderer Default = new WebsiteDetailRenderer();
+
+    public async Task Render(
+        ApiResponseMessage apiResponseMessage,
+        IJsonSerializer jsonSerializer,
+        Action<string> messageWriter)
     {
-        public static readonly IApiResponseMessageRenderer Default = new WebsiteDetailRenderer();
+        var entity = await apiResponseMessage.GetDataAsync<WebsiteDto>(jsonSerializer);
 
-        public async Task Render(
-            ApiResponseMessage apiResponseMessage,
-            IJsonSerializer jsonSerializer,
-            Action<string> messageWriter)
+        entity.WriteBaseEntityInfo(messageWriter);
+        messageWriter($"{nameof(WebsiteDto.Name)} = {entity.Name}");
+
+        foreach (var (name, value) in entity.PropertyBag)
         {
-            var entity = await apiResponseMessage.GetDataAsync<WebsiteDto>(jsonSerializer);
-
-            entity.WriteBaseEntityInfo(messageWriter);
-            messageWriter($"{nameof(WebsiteDto.Name)} = {entity.Name}");
-
-            foreach (var (name, value) in entity.PropertyBag)
-            {
-                messageWriter($"{name} = {value.DisplayValue()}");
-            }
+            messageWriter($"{name} = {value.DisplayValue()}");
         }
     }
 }

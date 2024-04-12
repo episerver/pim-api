@@ -1,9 +1,6 @@
-﻿using System;
+﻿namespace PimApi.ConsoleApp.Queries;
 
-namespace PimApi.ConsoleApp.Queries
+public interface IQueryWithParentId
 {
-    public interface IQueryWithParentId
-    {
-        Guid? ParentId { get; }
-    }
+    Guid? ParentId { get; }
 }

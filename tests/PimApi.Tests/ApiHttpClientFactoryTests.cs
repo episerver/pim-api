@@ -1,38 +1,32 @@
-﻿using FluentAssertions;
-using NUnit.Framework;
-using System;
-using System.Diagnostics.CodeAnalysis;
+﻿namespace PimApi.Tests;
 
-namespace PimApi.Tests
+[ExcludeFromCodeCoverage]
+[TestFixture(Category = nameof(Extensions))]
+[Parallelizable(ParallelScope.All)]
+public class ApiHttpClientFactoryTests
 {
-    [ExcludeFromCodeCoverage]
-    [TestFixture(Category = nameof(Extensions))]
-    [Parallelizable(ParallelScope.All)]
-    public class ApiHttpClientFactoryTests
+    [Test]
+    public void CreateShouldThrowArgumentExceptionWhenBadUrl()
     {
-        [Test]
-        public void CreateShouldThrowArgumentExceptionWhenBadUrl()
+        var connectionInformation = new ConnectionInformation
         {
-            var connectionInformation = new ConnectionInformation
-            {
-                PimUrlBase = null!
-            };
+            PimUrlBase = null!
+        };
 
-            var httpClientFactory = new ApiHttpClientFactory(connectionInformation);
+        var httpClientFactory = new ApiHttpClientFactory(connectionInformation);
 
-            Action act = () => httpClientFactory.Create();
+        Action act = () => httpClientFactory.Create();
 
-            act.Should().ThrowExactly<ArgumentNullException>();
-        }
+        act.Should().ThrowExactly<ArgumentNullException>();
+    }
 
-        [Test]
-        public void CreateShouldThrowArgumentExceptionWhenNullConnectionInformation()
-        {
-            var httpClientFactory = new ApiHttpClientFactory(null!);
+    [Test]
+    public void CreateShouldThrowArgumentExceptionWhenNullConnectionInformation()
+    {
+        var httpClientFactory = new ApiHttpClientFactory(null!);
 
-            Action act = () => httpClientFactory.Create();
+        Action act = () => httpClientFactory.Create();
 
-            act.Should().ThrowExactly<ArgumentNullException>();
-        }
+        act.Should().ThrowExactly<ArgumentNullException>();
     }
 }

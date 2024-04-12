@@ -1,15 +1,12 @@
-﻿using System;
+﻿namespace PimApi.Entities;
 
-namespace PimApi.Entities
+public class CategoryTaxonomyWebsiteDto : BaseEntityDto
 {
-    public class CategoryTaxonomyWebsiteDto : BaseEntityDto
-    {
-        public Guid CategoryTaxonomyId { get; set; }
+    public Guid CategoryTaxonomyId { get; set; }
 
-        public CategoryTaxonomyDto? CategoryTaxonomy { get; set; }
+    public CategoryTaxonomyDto? CategoryTaxonomy { get; set; }
 
-        public Guid WebsiteId { get; set; }
+    public Guid WebsiteId { get; set; }
 
-        public WebsiteDto? Website { get; set; }
-    }
+    public WebsiteDto? Website { get; set; }
 }

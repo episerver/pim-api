@@ -1,11 +1,8 @@
-﻿using System;
+﻿namespace PimApi;
 
-namespace PimApi
+public class DateTimeProvider
 {
-    public class DateTimeProvider
-    {
-        public readonly static DateTimeProvider Default = new();
+    public static readonly DateTimeProvider Default = new();
 
-        public virtual DateTimeOffset GetUtcNow() => DateTimeOffset.UtcNow;
-    }
+    public virtual DateTimeOffset GetUtcNow() => DateTimeOffset.UtcNow;
 }

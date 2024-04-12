@@ -1,11 +1,4 @@
-﻿using FluentAssertions;
-using PimApi.ConsoleApp.Queries;
-using PimApi.Entities;
-using System;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using PimApi.ConsoleApp.Queries;
 using static PimApi.Tests.TestSetup;
 
 namespace PimApi.Tests
