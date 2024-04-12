@@ -1,9 +1,6 @@
-﻿using System;
+﻿namespace PimApi.ConsoleApp.Queries;
 
-namespace PimApi.ConsoleApp.Queries
+public interface IQueryWithEntityId
 {
-    public interface IQueryWithEntityId
-    {
-        Guid? Id { get; set; }
-    }
+    Guid? Id { get; set; }
 }

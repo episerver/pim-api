@@ -1,7 +1,6 @@
-﻿namespace PimApi.Entities
+﻿namespace PimApi.Entities;
+
+public class ProductRelationshipDto : BaseEntityDto
 {
-    public class ProductRelationshipDto : BaseEntityDto
-    {
-        public string Name { get; set; } = string.Empty;
-    }
+    public string Name { get; set; } = string.Empty;
 }

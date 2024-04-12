@@ -1,14 +1,14 @@
 ﻿using Optimizely.PIM.Data.V1;
-using System.Collections.Generic;
-using System.Linq;
 
-namespace PimApi.SeedData
+namespace PimApi.SeedData;
+
+public static class RequestData
 {
-    public static class RequestData
+    public static IReadOnlyCollection<Product> GetProducts()
     {
-        public static IReadOnlyCollection<Product> GetProducts()
-        {
-            return Enumerable.Range(1, 100).Select(index =>
+        return Enumerable
+            .Range(1, 100)
+            .Select(index =>
             {
                 var product = new Product
                 {
@@ -20,9 +20,21 @@ namespace PimApi.SeedData
                 product.PropertyBag.Add("Dropdown", "D1");
                 product.PropertyBag.Add("NewMultiselect", "M1~M2");
 
-                product.ProductAssets.Add(new ProductAsset { AssetFolder = $"Folder-{index}", AssetName = $"AssetName-{index}" });
+                product.ProductAssets.Add(
+                    new ProductAsset
+                    {
+                        AssetFolder = $"Folder-{index}",
+                        AssetName = $"AssetName-{index}"
+                    }
+                );
 
-                product.ProductRelatedProducts.Add(new ProductRelatedProduct { ProductNumber = $"Child-{index}", RelationshipType = "RelationshipType" });
+                product.ProductRelatedProducts.Add(
+                    new ProductRelatedProduct
+                    {
+                        ProductNumber = $"Child-{index}",
+                        RelationshipType = "RelationshipType"
+                    }
+                );
 
                 var productCategory = new ProductCategory { CategoryTree = $"Categories{index}" };
                 productCategory.Categories.Add("Category 1");
@@ -30,7 +42,7 @@ namespace PimApi.SeedData
                 product.ProductCategories.Add(productCategory);
 
                 return product;
-            }).ToArray();
-        }
+            })
+            .ToArray();
     }
 }

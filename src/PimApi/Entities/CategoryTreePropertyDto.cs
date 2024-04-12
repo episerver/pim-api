@@ -1,20 +1,17 @@
-﻿using System;
+﻿namespace PimApi.Entities;
 
-namespace PimApi.Entities
+public class CategoryTreePropertyDto : BaseEntityDtoWithEndpoint
 {
-    public class CategoryTreePropertyDto : BaseEntityDtoWithEndpoint
-    {
-        public Guid CategoryTreeId { get; set; }
+    public Guid CategoryTreeId { get; set; }
 
-        public CategoryTreeDto? CategoryTree { get; set; }
+    public CategoryTreeDto? CategoryTree { get; set; }
 
-        public Guid PropertyId { get; set; }
+    public Guid PropertyId { get; set; }
 
-        public PropertyDto? Property { get; set; }
+    public PropertyDto? Property { get; set; }
 
-        public int SortOrder { get; set; }
+    public int SortOrder { get; set; }
 
-        public override string EntityUrlBase => "categoryTreeProperties";
+    public override string EntityUrlBase => "categoryTreeProperties";
 
-    }
 }

@@ -1,17 +1,16 @@
-﻿namespace PimApi
+﻿namespace PimApi;
+
+public struct QueryDescriptor
 {
-    public struct QueryDescriptor
-    {
-        public string DisplayName { get; set; }
+    public string DisplayName { get; set; }
 
-        public string Description { get; set; }
+    public string Description { get; set; }
 
-        public int QueryNumber { get; set; }
+    public int QueryNumber { get; set; }
 
-        public string Group { get; set; }
+    public string Group { get; set; }
 
-        public IQuery Query { get; set; }
+    public IQuery Query { get; set; }
 
-        public bool IsSet() => Query is not null;
-    }
+    public readonly bool IsSet() => Query is not null;
 }
