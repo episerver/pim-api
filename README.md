@@ -29,6 +29,7 @@ Any applications using this PIM API codebase must support at least one of the fo
 
 * [.NET Standard 2.0 ](https://docs.microsoft.com/en-us/dotnet/standard/net-standard) (includes cross platform support with .NET Core)
 * [.NET Framework 4.6.1](https://www.microsoft.com/en-us/download/details.aspx?id=49981) (Windows only)
+* [Postman](https://docs.developers.optimizely.com/digital-experience-platform/docs/authentication#sample-code-to-request-hmac)
 
 ## Important Notes
 
