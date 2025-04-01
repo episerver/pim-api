@@ -50,7 +50,7 @@ public class SearchByProductPropertyEqualsValue
         var querySplit = queryAsString.Split('?');
         var newQuery =
             querySplit[0]
-            + "/GetInternal(languageId=null,isShowOnlyProductsMissingTranslations=false)?"
+            + "/GetInternal(notificationId=null,languageId=null,isShowOnlyProductsMissingTranslations=false)?"
             + (querySplit.Length > 1 ? querySplit[1] : string.Empty);
 
         return pimApiClient.GetAsync(newQuery);
