@@ -1,145 +1,176 @@
-﻿syntax = "proto3";
+﻿/* Ref: proto types - https://learn.microsoft.com/vi-vn/aspnet/core/grpc/protobuf?view=aspnetcore-7.0*/
+
+syntax = "proto3";
 import "google/protobuf/wrappers.proto";
 import "google/protobuf/timestamp.proto";
 
 package Optimizely.PIM.Data.V1;
 
-service DataIntegration {
-    /*
-        Sending products and their related data to PIM that will be converted to respective import jobs.
-
-        Errors: the response will include IsSuccess as false and an ErrorMessage for each type of error as below:
-            For example, {"IsSuccess":false,"ErrorMessage":"Import template does not exist!","RequestId":null}
-
-            The requested data exceeds the maximum records:
-                - response will include the error message "The request data exceeds 200k records"
-            Timezone is not set in request data:
-                - The response will include the error message "Missing timezone!"
-            The given timezone does not exist or correct:
-                - The response will include the error message "Timezone is not found!"
-            Missing product number of any product in request data:
-                - The response will include the error message "Product number of some records are missing"
-            Given product import template doesn't exist in PIM:
-                - The response will include the error message "Import template does not exist!"
-            Given product import template doesn't match with product's information in the request data:
-                - The response will include the error message "Product data do not match with given template"
-    */
+// This service allows clients to import product & its related data and monitor the import status
+service DataIntegration {   
+    // ImportProduct allows streaming of product data for bulk imports
+    // 
+    // The client streams product data in chunks, which are then processed as a batch
+    //
+    // Returns:
+    //      - success flag and a request ID for tracking
+    //      - unsuccess flag and an error message if the import fails to initiate
+    //          For example, {"IsSuccess":false,"ErrorMessage":"Import template does not exist!","RequestId":null}
+    //          
+    //          Errors:
+    //              The requested data exceeds the maximum records:
+    //                  - response will include the error message "The request data exceeds 200k records"
+    //              Timezone is not set in request data:
+    //                  - The response will include the error message "Missing timezone!"
+    //              The given timezone does not exist or correct:
+    //                  - The response will include the error message "Timezone is not found!"
+    //              Missing product number of any product in request data:
+    //                  - The response will include the error message "Product number of some records are missing"
+    //              Given product import template doesn't exist in PIM:
+    //                  - The response will include the error message "Import template does not exist!"
+    //              Given product import template doesn't match with product's information in the request data:
+    //                  - The response will include the error message "Product data do not match with given template"    
     rpc ImportProduct (stream ImportProductRequest) returns (ImportProductResponse);
 
-    // Getting status of import jobs from PIM.
+    // GetImportStatus retrieves the current status of an import operation
+    //
+    // Provide the request ID returned from ImportProduct to track its progress   
     rpc GetImportStatus (GetImportStatusRequest) returns (GetImportStatusResponse);
 }
 
+// ImportProductRequest contains product data for importing
 message ImportProductRequest {
-    // Name of import product template which client has to pre-defined in PIM for mapping between client's data with PIM's properties
+    // Import template name which client has to pre-defined in PIM for mapping between client's data with PIM's properties
     google.protobuf.StringValue importTemplate = 1;
-    /*
-        Client's time zone id (for example: Asia/Bangkok).
-        This will be used for correcting the value of the date-time properties in the product.
-    */ 
+  
+    // Time zone identifier for date/time field parsing (for example: Asia/Bangkok)
     string timeZone = 2;
-    // List of product data
+
+    // List of products to import
     repeated Product products = 3;
 }
 
+// Product represents a product to be imported
 message Product {
     /*
-        [PIM System Property] Unique identify string of a product.
+       [PIM System Property] Unique product identifier.
        In the case of import-related product data only, we just need to set the value for Product Number 
        and related data (product Assets, product Categories, productRelatedProducts) in request data.
     */
     string productNumber = 1;
-    // [PIM System Property] Short description of a product
+
+    // [PIM System Property] Product display name
     google.protobuf.StringValue productTitle = 2;
-    // [PIM System Property] Value will be used in link of a commerce site 
+
+    // [PIM System Property] URL-friendly segment for the product
     google.protobuf.StringValue urlSegment = 3;
-    // Template name of a product which includes properties as required information to create a product
+
+    // Template name to use for this product
     google.protobuf.StringValue productTemplate = 4;
-    // [PIM System Property] The time of a product is disabled in PIM
+
+    // [PIM System Property] When the product should be deactivated
     google.protobuf.Timestamp deactivateOn = 5;
+
     // [PIM System Property] Variant type name which will be set on parent product
     google.protobuf.StringValue variantType = 6;
+
     // [PIM System Property] Product number of parent product which will be set on child product
     google.protobuf.StringValue parentProduct = 7;
+
     /*
         It contains the rest of properties name and their value in the product template that couldn't map with PIM system properties.
         For example, 
             In product template 'Shirt' has non system property 'Color'. This have to be in propertyBag as [{'Color': 'Red'}]
-    */
+    */    
     map<string, string> propertyBag = 8;
-
-    /*
-       This contains a list of assets that intend to assign to the product.
-       Let it empty in case no asset needs to be assigned.
-    */ 
+       
+    // Assets (images, documents) related to this product
+    // Let it empty in case no asset needs to be assigned.
     repeated ProductAsset productAssets = 9;
-    /*
-       This contains a list of categories that intend to assign to the product.
-       Let it empty in case no category needs to be assigned.
-    */ 
+
+    // Categories this product belongs to
+    // Let it empty in case no category needs to be assigned.
     repeated ProductCategory productCategories = 10;
-    /*
-       This contains a list of related products that intend to assign to the product.
-       Let it empty in case no related product needs to be assigned.
-    */ 
+   
+    // Related products (cross-sells, up-sells, etc.)
+    // Let it empty in case no related product needs to be assigned.
     repeated ProductRelatedProduct productRelatedProducts = 11;
 }
 
+// ProductAsset links a product to an asset
 message ProductAsset {
-    // Folder's name where this asset is located
+    // Folder containing the asset
     string assetFolder = 1;
-    // Asset name
+    
+    // Name of the asset
     string assetName = 2;
-    // Flag to set this asset as the representative image of the product
+    
+    // Whether this is the primary asset for the product
     google.protobuf.BoolValue isPrimary = 3;
-    // Flag to indicate assign or unassign this asset out of the product
+
+    // Whether to remove this asset from the product
     google.protobuf.BoolValue isUnassign = 4;
 }
 
+// ProductCategory links a product to a category
 message ProductCategory {
-    // Category tree name
+    // Category tree identifier
     string categoryTree = 1;
-    // The hierarchy of category 
+
+    // Category path elements
     repeated string categories = 2;
+
     /*
         For B2C Commerce, a category can be set as a primary one of a product and this flag is dedicated for that purpose.
         This could be ignored as a null value in B2B Commerce
     */ 
     google.protobuf.BoolValue isPrimary = 3;
-    // Flag to indicate assign or unassign this category out of the product
+
+    // Whether to remove this category from the product
     google.protobuf.BoolValue isUnassign = 4;
 }
 
+// ProductRelatedProduct defines relationships between products
 message ProductRelatedProduct {
-    // Product number of related product
+    // Product number of the related product
     string productNumber = 1;
-    // Relationship type between this related product and the main product
+
+    // Type of relationship (cross-sell, up-sell, etc.)
     string relationshipType = 2;
-    // Flag to indicate assign or unassign this related product out of the main product
+
+    // Whether to remove this relationship
     google.protobuf.BoolValue isUnassign = 3;
 }
 
+// ImportProductResponse provides the result of an import request
 message ImportProductResponse {
-    // Flag to indicate the success of request
+    // Whether the import was successfully initiated
     bool isSuccess = 1;
-    // PIM error message for failure case
+        
+    // Error message if the import failed to initiate
     google.protobuf.StringValue errorMessage = 2;
-    // The request id which will be used for getting import jobs status (This just has value in case of success)
+
+    // ID to track the import status
     google.protobuf.StringValue requestId = 3;
 }
 
+// GetImportStatusRequest to check on an import's progress
 message GetImportStatusRequest {
-    // The request id which getting from ImportResponse.
+  // The ID received from a successful ImportProductResponse
     string requestId = 1;
 }
 
+// GetImportStatusResponse with the current state of the import
 message GetImportStatusResponse {
-    // Status of product import
-    google.protobuf.StringValue importProductStatus = 1;
-    // Status of product's asset import
-    google.protobuf.StringValue importProductAssetStatus = 2;
-    // Status of product's category import
-    google.protobuf.StringValue importProductCategoryStatus = 3;
-    // Status of product's related product import
-    google.protobuf.StringValue importProductRelatedProductStatus = 4;
+  // Status of product data import
+  string import_product_status = 1;
+  
+  // Status of product asset import
+  string import_product_asset_status = 2;
+  
+  // Status of product category import
+  string import_product_category_status = 3;
+  
+  // Status of related product import
+  string import_product_related_product_status = 4;
 }
