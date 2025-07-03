@@ -16,9 +16,11 @@ https://github.com/episerver/pim-api/blob/main/src/PimApi/Protos/dataIntegration
 ```
 2. Add required nuget packages
 
-*grpc.net.client (https://www.nuget.org/packages/Grpc.Net.Client) - contains the .netcore client.
-*google.protobuf (https://www.nuget.org/packages/Google.Protobuf/) - contains protobuf message API for c#.
-*grpc.tools (https://www.nuget.org/packages/Grpc.Tools/) - contains c# tooling support for proto files. It translates gRPC calls in proto file into metholds on the concrete type, which can be called directly from your codebase. For example, in dataIntegration.v1.proto, a concreate DataIntegration.DataIntegrationClient type is generated. You can call DataIntegration.DataIntegrationClient.GetImportStatusAsync to initiate a gRPC call to the server.
+grpc.net.client (https://www.nuget.org/packages/Grpc.Net.Client) - contains the .netcore client.
+
+google.protobuf (https://www.nuget.org/packages/Google.Protobuf/) - contains protobuf message API for c#.
+
+grpc.tools (https://www.nuget.org/packages/Grpc.Tools/) - contains c# tooling support for proto files. It translates gRPC calls in proto file into metholds on the concrete type, which can be called directly from your codebase. For example, in dataIntegration.v1.proto, a concreate DataIntegration.DataIntegrationClient type is generated. You can call DataIntegration.DataIntegrationClient.GetImportStatusAsync to initiate a gRPC call to the server.
 
 **Turnstile key and secret**
 
@@ -60,7 +62,6 @@ Any applications using this PIM API codebase must support at least one of the fo
 * API uses [OData](https://www.odata.org/)
 * Queryies that specify a $top will never include a next link.
 * Queries that do not specify $top will return at most 1,000 results. If more are available a next link will be provided for pagination in the response.
-* The console application does not demonstrate iterating a full product set, but sample code is available in the EntityIteratorTests.cs class in the test project.
 * JSON Serialization can be done with either [Newtonsoft.Json](https://www.nuget.org/packages/Newtonsoft.Json/) or [System.Text.Json](https://www.nuget.org/packages/System.Text.Json/) implemented using a custom IJsonSerializer interface in the Pim API Project.
 
 ## Entities
