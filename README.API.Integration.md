@@ -24,7 +24,7 @@ grpc.tools (https://www.nuget.org/packages/Grpc.Tools/) - contains c# tooling su
 
 **Turnstile key and secret**
 
-Sending an email to Optimizely Support team at support@optmizely.com to accquire the Turnstile and AppSecret.
+Please send an email to Optimizely Support team at support@optmizely.com to accquire the Turnstile key and Secret.
 
 **NOTE** 
 * Credentials provided will have read-only or write access.
