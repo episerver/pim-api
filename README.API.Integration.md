@@ -15,11 +15,11 @@ https://github.com/episerver/pim-api/blob/main/src/PimApi/Protos/dataIntegration
 </ItemGroup>
 ```
 2. Add required nuget packages
-grpc.net.client (https://www.nuget.org/packages/Grpc.Net.Client) - contains the .netcore client.
 
-google.protobuf (https://www.nuget.org/packages/Google.Protobuf/) - contains protobuf message API for c#.
+*grpc.net.client (https://www.nuget.org/packages/Grpc.Net.Client) - contains the .netcore client.
+*google.protobuf (https://www.nuget.org/packages/Google.Protobuf/) - contains protobuf message API for c#.
+*grpc.tools (https://www.nuget.org/packages/Grpc.Tools/) - contains c# tooling support for proto files. It translates gRPC calls in proto file into metholds on the concrete type, which can be called directly from your codebase. For example, in dataIntegration.v1.proto, a concreate DataIntegration.DataIntegrationClient type is generated. You can call DataIntegration.DataIntegrationClient.GetImportStatusAsync to initiate a gRPC call to the server.
 
-grpc.tools (https://www.nuget.org/packages/Grpc.Tools/) - contains c# tooling support for proto files. It translates gRPC calls in proto file into metholds on the concrete type, which can be called directly from your codebase. For example, in dataIntegration.v1.proto, a concreate DataIntegration.DataIntegrationClient type is generated. You can call DataIntegration.DataIntegrationClient.GetImportStatusAsync to initiate a gRPC call to the server.
 **Turnstile key and secret**
 
 Sending an email to Optimizely Support team at support@optmizely.com to accquire the AppKey and AppSecret.
@@ -38,14 +38,14 @@ Once credentials have been obtained, create a document in the solution root fold
 ```
 **Make a gRPC request to PIM**
 1. Build Epi-HMAC authentication token for request’s header
-Take reference from the below code sample to build the HMAC authentication 
+
 https://github.com/episerver/pim-api/blob/7f3c764f85a2715610de3390230c9f27cf7797cb/src/PimApi/GrpcClientService.cs#L72-L98 
 Code guide:
 -	methodName: the name of the gRPC method you plan to call, example: "GetImportStatus" or "Import."
 -	turnstileKey and turnstileSecret: get from above.
 2. Call the gRPC API
-Take reference from the below code sample to call to PIM gRPC API
-Reference: https://github.com/episerver/pim-api/blob/7f3c764f85a2715610de3390230c9f27cf7797cb/src/PimApi/GrpcClientService.cs#L60-L70
+
+https://github.com/episerver/pim-api/blob/7f3c764f85a2715610de3390230c9f27cf7797cb/src/PimApi/GrpcClientService.cs#L60-L70
 
 ## Requirements
 
