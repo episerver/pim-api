@@ -24,20 +24,12 @@ grpc.tools (https://www.nuget.org/packages/Grpc.Tools/) - contains c# tooling su
 
 **Turnstile key and secret**
 
-Sending an email to Optimizely Support team at support@optmizely.com to accquire the AppKey and AppSecret.
+Sending an email to Optimizely Support team at support@optmizely.com to accquire the Turnstile and AppSecret.
 
 **NOTE** 
 * Credentials provided will have read-only or write access.
 * **read-only** credentials are limited to HTTP GET operations, and **write** credentials will allow you to call data integration endpoints to import data and check import status.
 
-Once credentials have been obtained, create a document in the solution root folder called **ConnectionInformation.json** from the following sample code
-
-```json
-{
-  "AppKey": "Enter the App Key",
-  "AppSecret": "Enter the App Secret"
-}
-```
 **Make a gRPC request to PIM**
 1. Build Epi-HMAC authentication token for request’s header
 
