@@ -1,4 +1,5 @@
-﻿using Grpc.Core;
+﻿using EPiServer.Turnstile.Contracts.Hmac;
+using Grpc.Core;
 using Grpc.Net.Client;
 using Optimizely.PIM.Data.V1;
 using System.Security.Cryptography;
@@ -75,7 +76,7 @@ public class GrpcClientService
         string turnstileSecret
     )
     {
-        var timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+        var timestamp = DateTime.UtcNow.AsMillisecondsFromUnixEpoch();
         var nonce = Guid.NewGuid().ToString("N");
 
         var bodyHashBytes = MD5.Create().ComputeHash(Array.Empty<byte>());
